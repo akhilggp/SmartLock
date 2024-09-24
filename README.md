@@ -17,7 +17,7 @@ Practice Full stack application. Which helps in creating keys and locks for a Ho
 6. Lgin and Logout User
 7. Register User
 
-# Tech Stck Included: 
+# Tech Stack Included: 
 -> Java
 
 -> Spring Boot
