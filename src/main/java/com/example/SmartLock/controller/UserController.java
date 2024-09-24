@@ -16,13 +16,15 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@RequestParam String username, @RequestParam String password, @RequestParam String firstname, @RequestParam String lastname) {
-        User user = userService.registerUser(username, password, firstname, lastname);
-        return "User "+user.getFirstname()+" registered successfully";
+//        User user = userService.registerUser(username, password, firstname, lastname);
+//        return "User "+user.getFirstname()+" registered successfully";
+        return userService.registerUser(username, password, firstname, lastname);
     }
 
     @PostMapping("/login")
     public String loginUser(@RequestParam String username, @RequestParam String password) {
-        User user = userService.loginUser(username, password);
-        return "User "+ user.getFirstname()+" logged in successfully";
+//        User user = userService.loginUser(username, password);
+//        return "User "+ user.getFirstname()+" logged in successfully";
+        return userService.loginUser(username, password);
     }
 }

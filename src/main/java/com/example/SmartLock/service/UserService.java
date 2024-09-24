@@ -13,23 +13,20 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public User registerUser(String username, String password, String firstname, String lastname) {
+    public String registerUser(String username, String password, String firstname, String lastname) {
         if (userRepository.findByUsername(username) != null) {
-            throw new RuntimeException("User already exists");
+            return "User already exists";
         }
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(bCryptPasswordEncoder.encode(password));
-        user.setFirstname(firstname);
-        user.setLastname(lastname);
-        return userRepository.save(user);
+        User user = new User(username, bCryptPasswordEncoder.encode(password), firstname, lastname);
+        userRepository.save(user);
+        return "User "+ user.getFirstname()+" registered in successfully";
     }
 
-    public User loginUser(String username, String password) {
+    public String loginUser(String username, String password) {
         User user = userRepository.findByUsername(username);
         if (user != null && bCryptPasswordEncoder.matches(password, user.getPassword())) {
-            return user;
+            return "User "+ user.getFirstname()+" logged in successfully";
         }
-        throw new RuntimeException("Invalid username or password");
+        return "Invalid username or password";
     }
 }
