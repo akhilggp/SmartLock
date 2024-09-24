@@ -13,8 +13,13 @@ Practice Full stack application. Which helps in creating keys and locks for a Ho
 
 # Tech Stck Included: 
 -> Java
+
 -> Spring Boot
+
 -> Spring Security
+
 -> Maven 
+
 -> React
+
 -> Mongodb
