@@ -1,13 +1,18 @@
 package com.example.SmartLock.config;
 
+import com.example.SmartLock.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -16,39 +21,21 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                // Enable CSRF protection
-//                .csrf(csrf -> csrf
-//                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                        // Optionally, specify endpoints to ignore CSRF protection
-//                        //.ignoringRequestMatchers("/api/**") // Uncomment if you have stateless API endpoints
-//                )
-//                // Configure authorization rules
-//                .authorizeHttpRequests(authorize -> authorize
-//                        // Public endpoints that don't require authentication
-//                        .requestMatchers("/public/**").permitAll()
-//                        // All other endpoints require authentication
-//                        .anyRequest().authenticated()
-//                )
-//                // Configure form-based authentication
-//                //***make changes here when including jwt tokens when adding CORS(connecting to react)***
-//                .formLogin(form -> form
-//                        .loginPage("/login") // Specify your custom login page URL
-//                        .permitAll() // Allow everyone to see the login page
-//                        .defaultSuccessUrl("/home", true) // Redirect to /home upon successful login
-//                )
-//
-//                // Configure logout functionality
-//                .logout(logout -> logout
-//                        .logoutUrl("/logout") // Specify the logout URL
-//                        .logoutSuccessUrl("/login?logout") // Redirect to login page after logout
-//                        .permitAll() // Allow everyone to access logout
-//                );
 
         http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF (if appropriate)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login").permitAll()
                         .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home",true)
+                        .permitAll()
+                )
+                .logout(logout->logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
                 )
                 .httpBasic(withDefaults()); // Enable HTTP Basic authentication
 
@@ -58,5 +45,18 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider(UserService userService) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 }

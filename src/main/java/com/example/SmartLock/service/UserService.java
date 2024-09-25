@@ -3,11 +3,16 @@ package com.example.SmartLock.service;
 import com.example.SmartLock.model.User;
 import com.example.SmartLock.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -22,11 +27,17 @@ public class UserService {
         return "User "+ user.getFirstname()+" registered in successfully";
     }
 
-    public String loginUser(String username, String password) {
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
-        if (user != null && bCryptPasswordEncoder.matches(password, user.getPassword())) {
-            return "User "+ user.getFirstname()+" logged in successfully";
+        if(user == null){
+            throw new UsernameNotFoundException("User not found");
         }
-        return "Invalid username or password";
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                new ArrayList<>()
+        );
     }
 }
