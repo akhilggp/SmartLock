@@ -1,6 +1,5 @@
 package com.example.SmartLock.controller;
 
-import com.example.SmartLock.model.User;
 import com.example.SmartLock.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
