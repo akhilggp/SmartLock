@@ -29,3 +29,19 @@ Practice Full stack application. Which helps in creating keys and locks for a Ho
 -> React
 
 -> Mongodb
+
+# React using Vite
+
+Using Vite@4.1.0
+
+Node Latest version - v22.9.0
+
+### Installation and Running application
+
+npm create vite@latest
+
+cd project-name
+
+npm install
+
+npm run dev
