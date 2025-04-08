@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Map;
 
+// Make sure that this service implements UserDetails Service so that Sping takes care of the authentication.
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
@@ -32,6 +33,7 @@ public class UserService implements UserDetailsService {
                 .body(Map.of("message", "User " + user.getFirstname() + " registered successfully"));
     }
 
+    // Spring Internally calls this function when there is need for authentication. So credetials check logic should be set here.
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);

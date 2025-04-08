@@ -29,6 +29,9 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    //@RequestBody maps the json that comes in into the Handler.
+    //The incoming JSON is automatically mapped to the LoginRequestHandler object (a simple POJO with email and password fields).
+    //You also receive the raw HttpServletRequest, used to create a session and store the security context.
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@RequestBody RegistrationRequestHandler requestHandler) {
         return userService.registerUser(
@@ -39,6 +42,7 @@ public class UserController {
         );
     }
 
+    // Handlers are those that the incoming data is mapped to and HttpServletRequest is to know about the request that comes in.
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginRequestHandler requestHandler, HttpServletRequest request) {
         try {
@@ -67,6 +71,7 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message","Unauthorized Access"));
         }
+
         return ResponseEntity.ok(Map.of("message", "Welcome Home," + user.getUsername()));
     }
 

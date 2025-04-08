@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import getCsrfToken from "./CSRFTokenRetrieval";
+import "../styles/Homepage.css";
 
 const API_BASE_URL = "http://localhost:8081";
 
@@ -54,12 +55,24 @@ const Home = () => {
       console.error("Logout error:", error.response?.data || error.message);
     }
   };
+  const getUsernameFromMessage = (msg: string) => {
+    try {
+      const parts = msg.split(",");
+      if (parts.length < 2) return msg;
+      const email = parts[1].trim();
+      return email.split("@")[0];
+    } catch (e) {
+      return msg;
+    }
+  };
 
   return (
-    <div>
+    <div className="home-container">
+      <nav className="home-nav">
+        <h2>{getUsernameFromMessage(message)}</h2>
+        <button onClick={handleLogout}>Logout</button>
+      </nav>
       <h1>Welcome to the Home Page!</h1>
-      <h2>{message}</h2> {/* ✅ Now message is always a string */}
-      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };

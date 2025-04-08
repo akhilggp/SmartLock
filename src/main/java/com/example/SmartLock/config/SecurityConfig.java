@@ -20,9 +20,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+// Enables and Defines Spring Security Configurations for the app.
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    // Core Configurations method which is used to set up CORS, CSRF, Session Policies, Access Rules, etc. and write our own filters.
+    // CORS -  Cross origin Request Sites. which allows frontend to talk to backend where frontend and backend are running on different server.
+    // Through Cookies and Header XSRF tokens
+    // CSRF - Cross Site Request Forgery. CSRFToken Repository is used for CSRF protection, Stores csrf token in cookies
+    // By default HttpOnly is True which means JavaScript cannot access the cookie using document.Cookie. By setting it to false we are saying java script can read it.
+    // There are security issues by doing so as Cross site scripting attacks are possible.
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,9 +39,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
+                // this won't create unnecessary sessions and if created should be authenticated.
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
+                // for authorizing the requests. and if not required it will except this authorization.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login", "/csrf-token").permitAll()
                         .anyRequest().authenticated()
@@ -59,11 +69,14 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // For Encrypting the password.
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Uses UserServiceDetails Service and ties up to the User service. for authentication.
+    // Make sure UserService implements the UserServiceDetails interface.
     @Bean
     public DaoAuthenticationProvider authenticationProvider(UserService userService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -72,6 +85,7 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    // We need this if we are using authenticationManager.authenticate() in UserController for Login.
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
