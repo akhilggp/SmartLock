@@ -6,6 +6,9 @@ import getCsrfToken from "./CSRFTokenRetrieval";
 
 const API_BASE_URL = "http://localhost:8081"; // Base API URL
 
+// useLocation() — to get information about the current location (like the current URL, search parameters, and state).
+// what is the current url. which is Login here. we can send this type of data to useNavigate and send it to another page.
+// Like in logout or When login is successful we want to send some data to the home page.
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,6 +17,11 @@ const Login = () => {
   const [logoutMessage, setLogoutMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // useEffect(): This is a React hook that allows you to perform side effects in function components (like fetching data, manipulating the DOM, or updating state).
+  // It runs after the component renders, and in this case, it listens for changes to location.state
+  // location.state will be accessible as we are using useLocation. So when the logout form sends a state in its navigate() then the state in the login form will be updated.
+  // And that particular message can be used to display or use it.
+  // useNavigate and useLocation as used as a combination to get a message from one page to another. just to know the state that this page acceots.
   useEffect(() => {
     if (location.state?.message) {
       setLogoutMessage(location.state.message);

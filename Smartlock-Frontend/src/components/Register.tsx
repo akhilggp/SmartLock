@@ -7,6 +7,8 @@ import getCsrfToken from "./CSRFTokenRetrieval";
 const API_BASE_URL = "http://localhost:8081"; // Base API URL
 
 const Register = () => {
+  // useNavigate Acts along with Routes in React to navigate from one page to another. Ex: Redirect to login page after Registration.
+  // similar to <Link> or <NavLink> in react but is used inside a function.
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstname: "",
@@ -33,7 +35,7 @@ const Register = () => {
     // Live validation
     validateField(e.target.name, e.target.value);
   };
-
+  // validates the fields based on the requirement for each of the input field. This is for live validation.
   const validateField = (name: string, value: string) => {
     let error = "";
     if (name === "firstname" || name === "lastname") {
@@ -61,7 +63,7 @@ const Register = () => {
         error = "Passwords do not match";
       }
     }
-
+    // The state of errors is updated here if there are any errors.
     setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
   };
 
@@ -76,6 +78,8 @@ const Register = () => {
     };
 
     // Validate required fields
+    // basically it takes each key value and sees if that is null or not. If not then it prints in the error as key is required.
+    // key.charAt(0).toUpperCase() + key.slice(1)(Eg: username -> Username) (U + sername )
     Object.keys(formData).forEach((key) => {
       if (!formData[key as keyof typeof formData]) {
         isValid = false;
@@ -94,7 +98,9 @@ const Register = () => {
     setErrors(newErrors);
     return isValid;
   };
-
+  // e.preventDefault prevents or stops the default behaviour of the Event. Like stopping from redirecting to a different link etc.
+  // In here we are stopping the default event of form submission.
+  // As 1. We need to do some checks before submitting the form and 2. We need to fetch the response from the backend,
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -141,6 +147,11 @@ const Register = () => {
     }
   };
 
+  // onSubmit: tells what to do when form is submitted. Like Form Submission when the submit button is clicked.
+  // Here its calling handleSubmit. Where certain checks are done and the form data is sent to backend Java to store the values in MongoDb.
+  // onChange: Returns event to the method that is mentioned when ever there is a change in the Text field. or any other interactive fields.
+  // Here its calling handleChange method where the changes are handled. like Live validation is done baed on the values that are entered. So this acts immediately instead of after the submission is done.
+  //
   return (
     <div className="container">
       <div className="register-container">

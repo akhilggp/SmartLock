@@ -6,6 +6,7 @@ import "../styles/Homepage.css";
 
 const API_BASE_URL = "http://localhost:8081";
 
+// the message sent in by the login page is taken and set here and used to display in the home page.
 const Home = () => {
   const [message, setMessage] = useState("Loading...");
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Home = () => {
       axios
         .get(`${API_BASE_URL}/home`, { withCredentials: true })
         .then((response) => {
-          setMessage(response.data.message || "No message received"); // ✅ Extract message property
+          setMessage(response.data.message || "No message received"); // Extract message property
         })
         .catch((error) => {
           console.error("Error fetching home message:", error);
