@@ -1,61 +1,53 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import getCsrfToken from "./CSRFTokenRetrieval";
 import "../styles/Homepage.css";
 
 const API_BASE_URL = "http://localhost:8081";
 
-// the message sent in by the login page is taken and set here and used to display in the home page.
 const Home = () => {
   const [message, setMessage] = useState("Loading...");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (location.state?.message) {
-      console.log(location.state);
-      setMessage(location.state.message);
-    } else {
+    const token = localStorage.getItem("token");
+
+    // 1. If redirected from Login with state message
+    if (location.state?.homeMessage) {
+      setMessage(location.state.homeMessage);
+    }
+    // 2. Otherwise, fetch protected home message
+    else if (token) {
       axios
-        .get(`${API_BASE_URL}/home`, { withCredentials: true })
+        .get(`${API_BASE_URL}/home`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
-          setMessage(response.data.message || "No message received"); // Extract message property
+          setMessage(response.data.message || "No message received");
         })
         .catch((error) => {
           console.error("Error fetching home message:", error);
+          localStorage.removeItem("token");
           navigate("/login", {
             state: { message: "Session expired. Please log in again." },
           });
         });
+    } else {
+      // No token at all
+      navigate("/login", {
+        state: { message: "Please login first." },
+      });
     }
   }, [location.state, navigate]);
 
   const handleLogout = async () => {
-    try {
-      const csrfToken = await getCsrfToken();
-      if (!csrfToken) {
-        console.error("Failed to get CSRF token");
-        return;
-      }
-
-      const logoutResponse = await axios.post(
-        `${API_BASE_URL}/logout`,
-        {},
-        {
-          withCredentials: true,
-          headers: { "X-XSRF-TOKEN": csrfToken },
-        }
-      );
-      if (logoutResponse.status === 200) {
-        console.log(logoutResponse.data.message);
-        localStorage.clear();
-        navigate("/login", { state: { message: "Logout successful!" } });
-      }
-    } catch (error: any) {
-      console.error("Logout error:", error.response?.data || error.message);
-    }
+    localStorage.removeItem("token");
+    navigate("/login", { state: { message: "Logout successful!" } });
   };
+
   const getUsernameFromMessage = (msg: string) => {
     try {
       const parts = msg.split(",");

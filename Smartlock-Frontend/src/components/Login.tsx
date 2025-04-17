@@ -83,27 +83,37 @@ const Login = () => {
 
     try {
       // Step 1: Get CSRF token
-      const csrfToken = await getCsrfToken();
-      if (!csrfToken) {
-        alert("Failed to get CSRF token. Please try again.");
-        setIsSubmitting(false);
-        return;
-      }
+      // const csrfToken = await getCsrfToken();
+      // if (!csrfToken) {
+      //   alert("Failed to get CSRF token. Please try again.");
+      //   setIsSubmitting(false);
+      //   return;
+      // }
 
       // Step 2: Send Login Request
       const response = await axios.post(
         `${API_BASE_URL}/login`,
-        { email: formData.email, password: formData.password },
-        {
-          withCredentials: true,
-          headers: { "X-XSRF-TOKEN": csrfToken },
-        }
+        { email: formData.email, password: formData.password }
+        // used for session based requests only.
+        // {
+        //   withCredentials: true,
+        //   headers: { "X-XSRF-TOKEN": csrfToken },
+        // }
       );
+
+      const token = response.data.token;
+      if (!token) {
+        throw new Error("JWT token not found in response");
+      }
+
+      localStorage.setItem("token", token);
 
       if (response.status === 200) {
         // Step 3: Fetch Home Page Data
         const homeResponse = await axios.get(`${API_BASE_URL}/home`, {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         // Ensure `homeResponse.data` is a string or parse it properly
