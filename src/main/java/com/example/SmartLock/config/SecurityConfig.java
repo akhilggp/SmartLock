@@ -2,6 +2,7 @@ package com.example.SmartLock.config;
 
 import com.example.SmartLock.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -21,10 +23,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 // Enables and Defines Spring Security Configurations for the app.
+// Configuration says this is a configuration class
+// EnableWebSecurity tells these are the security configurations that Spring has to follow instead of Default configs
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     // Core Configurations method which is used to set up CORS, CSRF, Session Policies, Access Rules, etc. and write our own filters.
     // CORS -  Cross origin Request Sites. which allows frontend to talk to backend where frontend and backend are running on different server.
     // Through Cookies and Header XSRF tokens
@@ -33,16 +36,21 @@ public class SecurityConfig {
     // There are security issues by doing so as Cross site scripting attacks are possible.
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtTokenFilter) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                )
+//                .csrf(csrf -> csrf
+//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                )
+                // Disabling CSRF for JWT Tokens as a new session is created for every request made.
+                .csrf(AbstractHttpConfigurer::disable)
                 // this won't create unnecessary sessions and if created should be authenticated.
+//                .sessionManagement(session -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//                )
+                // making Stateless as new session should be created every time for JWT
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // for authorizing the requests. and if not required it will except this authorization.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login", "/csrf-token").permitAll()
@@ -65,7 +73,8 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable);
+                .formLogin(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

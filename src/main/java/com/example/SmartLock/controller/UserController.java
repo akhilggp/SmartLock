@@ -2,6 +2,7 @@ package com.example.SmartLock.controller;
 
 import com.example.SmartLock.handler.LoginRequestHandler;
 import com.example.SmartLock.handler.RegistrationRequestHandler;
+import com.example.SmartLock.service.JWTService;
 import com.example.SmartLock.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +29,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private JWTService jwtService;
 
     //@RequestBody maps the json that comes in into the Handler.
     //The incoming JSON is automatically mapped to the LoginRequestHandler object (a simple POJO with email and password fields).
@@ -43,23 +46,49 @@ public class UserController {
     }
 
     // Handlers are those that the incoming data is mapped to and HttpServletRequest is to know about the request that comes in.
+//    @PostMapping("/login")
+//    public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginRequestHandler requestHandler, HttpServletRequest request) {
+//        try {
+//            // Authentication
+//           Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            requestHandler.getEmail(),
+//                            requestHandler.getPassword()
+//                    )
+//            );
+//          // Set Authentication in SecurityContext
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            // Ensure Session exists
+//            HttpSession session = request.getSession(true);
+//            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+//                    SecurityContextHolder.getContext());
+//            return ResponseEntity.ok(Map.of("message", "Login successful"));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(Map.of("error", "Invalid email or password"));
+//        }
+//    }
+
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginRequestHandler requestHandler, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginRequestHandler requestHandler) {
         try {
-            // Authentication
-           Authentication authentication = authenticationManager.authenticate(
+            // Authenticate user
+            Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             requestHandler.getEmail(),
                             requestHandler.getPassword()
                     )
             );
-          // Set Authentication in SecurityContext
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            // Ensure Session exists
-            HttpSession session = request.getSession(true);
-            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                    SecurityContextHolder.getContext());
-            return ResponseEntity.ok(Map.of("message", "Login successful"));
+
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            System.out.println("Reached here");
+            // Generate JWT
+            String token = jwtService.generateToken(userDetails);
+            System.out.println("Reached here too");
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "message", "Login successful"
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid email or password"));
