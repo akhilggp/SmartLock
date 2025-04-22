@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import "../styles/Homepage.css";
+import NavigationBar from "./NavigationBar";
 
 const API_BASE_URL = "http://localhost:8081";
 
@@ -43,28 +44,9 @@ const Home = () => {
     }
   }, [location.state, navigate]);
 
-  const handleLogout = async () => {
-    localStorage.removeItem("token");
-    navigate("/login", { state: { message: "Logout successful!" } });
-  };
-
-  const getUsernameFromMessage = (msg: string) => {
-    try {
-      const parts = msg.split(",");
-      if (parts.length < 2) return msg;
-      const email = parts[1].trim();
-      return email.split("@")[0];
-    } catch (e) {
-      return msg;
-    }
-  };
-
   return (
     <div className="home-container">
-      <nav className="home-nav">
-        <h2>{getUsernameFromMessage(message)}</h2>
-        <button onClick={handleLogout}>Logout</button>
-      </nav>
+      <NavigationBar message={message} />
       <h1>Welcome to the Home Page!</h1>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import "../styles/LoginRegister.css";
-import getCsrfToken from "./CSRFTokenRetrieval";
+// import getCsrfToken from "./CSRFTokenRetrieval";
 
 const API_BASE_URL = "http://localhost:8081"; // Base API URL
 
