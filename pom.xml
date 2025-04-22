@@ -1,0 +1,6 @@
+<modules>
+    <module>UserAuthService</module>
+    <module>LockService</module>
+    <module>OptService</module>
+    <module>Gateway</module>
+</modules>
