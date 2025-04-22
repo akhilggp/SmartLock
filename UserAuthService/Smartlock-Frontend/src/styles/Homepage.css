@@ -1,0 +1,32 @@
+body {
+    background-color:#e6e6e6
+}
+.main-nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content:space-between;
+    padding: 20px 20px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.nav-logout {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content:end;
+    padding: 20px 20px;
+}
+.main-nav > .nav-buttons {
+    display: flex;
+    gap: 20px;
+}
+.nav-logout >  h2 {
+    font-size: 20px;
+}
+.home-nav > button {
+    height: fit-content;
+    width: fit-content;
+}

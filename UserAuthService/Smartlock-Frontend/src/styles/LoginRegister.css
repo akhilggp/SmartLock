@@ -1,0 +1,112 @@
+/* Ensures the body takes up the full height for centering */
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  /* Parent container for flexbox centering */
+  .container {
+    display: flex;
+    justify-content: flex-end; /* Align items to the right */
+    align-items: center;       /* Vertical centering */
+    height: 100vh;         /* Full viewport height */
+  }
+
+  /* Form container, centered horizontally with max width */
+  .register-container {
+    max-width: 350px;
+    width: 100%;
+    /* margin: 0 auto; */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+
+  .register-container::before {
+    content: ""; /* Required for pseudo-element */
+    position:absolute; /* Positioning */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../assets/smartlock.png'); /* Replace with your image URL */
+    background-size:cover; /* Ensure the image covers the container */
+    background-position: center; /* Center the image */
+    z-index: -1;
+}
+
+  /* Center the form heading */
+  .register-container h2 {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+  }
+
+  /* Form styling */
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  form div {
+    margin-bottom: 15px;
+  }
+
+  /* Label styling */
+  label {
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    font-style: oblique;
+  }
+
+  /* Input field styling */
+  input {
+    padding: 8px;
+    width: 100%;
+    margin-top: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: small;
+  }
+
+  /* Button styling */
+  button {
+    padding: 10px;
+    background-color: #12bbd8;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #040404;
+  }
+
+  /* Error message styling */
+  .error {
+    color: red;
+    font-size: 12px;
+  }
+
+  /* Success message styling */
+  .success-message {
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    font-family: 'Courier New', Courier, monospace;
+  }
+  .success-message:hover {
+    color: #12bbd8;
+  }
+
+  .form-anchor {
+    color: #12bbd8;
+    font-size: 12px;
+    display: flex;
+    gap: 169px;
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+
