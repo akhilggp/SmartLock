@@ -41,7 +41,8 @@ public class UserController {
                 requestHandler.getEmail(),
                 requestHandler.getPassword(),
                 requestHandler.getFirstname(),
-                requestHandler.getLastname()
+                requestHandler.getLastname(),
+                requestHandler.getHomeId()
         );
     }
 
@@ -81,9 +82,10 @@ public class UserController {
             );
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            System.out.println("Reached here");
+            String emailId = requestHandler.getEmail();
+
             // Generate JWT
-            String token = jwtService.generateToken(userDetails);
+            String token = jwtService.generateToken(userDetails, emailId, userService.getHomeId(emailId));
             System.out.println("Reached here too");
             return ResponseEntity.ok(Map.of(
                     "token", token,

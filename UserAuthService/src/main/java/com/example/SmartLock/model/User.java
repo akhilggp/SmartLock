@@ -14,12 +14,14 @@ public class User {
     private String password;
     private String firstname;
     private String lastname;
+    private String homeId;
 
-    public User(String email, String password, String firstname, String lastname) {
+    public User(String email, String password, String firstname, String lastname, String homeId) {
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.homeId = homeId;
     }
 
     public String getId() {
@@ -60,5 +62,12 @@ public class User {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+    public String getHomeId() {
+        return homeId;
+    }
+
+    public void setHomeId(String homeId) {
+        this.homeId = homeId;
     }
 }

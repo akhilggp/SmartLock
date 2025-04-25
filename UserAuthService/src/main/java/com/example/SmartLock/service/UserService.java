@@ -22,12 +22,12 @@ public class UserService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public ResponseEntity<Map<String, String>> registerUser(String email, String password, String firstname, String lastname) {
+    public ResponseEntity<Map<String, String>> registerUser(String email, String password, String firstname, String lastname, String homeId) {
         if (userRepository.findByEmail(email) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("error", "User already exists"));
         }
-        User user = new User(email, bCryptPasswordEncoder.encode(password), firstname, lastname);
+        User user = new User(email, bCryptPasswordEncoder.encode(password), firstname, lastname, homeId);
         userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Map.of("message", "User " + user.getFirstname() + " registered successfully"));
@@ -46,5 +46,9 @@ public class UserService implements UserDetailsService {
                 user.getPassword(),
                 new ArrayList<>()
         );
+    }
+
+    public String getHomeId(String emailId){
+        return userRepository.findByEmail(emailId).getHomeId();
     }
 }

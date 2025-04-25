@@ -20,9 +20,11 @@ public class JWTService {
     }
 
     // Generate JWT token
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, String emailId, String homeId) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("emailId", emailId)
+                .claim("homeId", homeId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
                 .signWith(getSigningKey())

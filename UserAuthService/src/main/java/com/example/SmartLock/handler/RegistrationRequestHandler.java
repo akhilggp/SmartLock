@@ -4,6 +4,9 @@ public class RegistrationRequestHandler {
     private String email;
     private String password;
     private String firstname;
+    private String lastname;
+
+    private String homeId;
 
     public String getEmail() {
         return email;
@@ -37,5 +40,13 @@ public class RegistrationRequestHandler {
         this.lastname = lastname;
     }
 
-    private String lastname;
+    public String getHomeId() {
+        return homeId;
+    }
+
+    public void setHomeId(String homeId) {
+        this.homeId = homeId;
+    }
+
+
 }
